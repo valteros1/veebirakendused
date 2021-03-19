@@ -10,12 +10,20 @@
 	$today = new DateTime("now");
 	$fromsemesterbegin = $semesterbegin->diff($today);
 	$fromsemesterbegindays = $fromsemesterbegin->format("%r%a");
+	$n2dalap2evad=['Pühapäev','Esmaspäev','Teisipäev','Kolmapäev','Neljapäev','Reede','Laupäev'];   
+	$n2dalap2eva_number=date('w');                                                    
+    $t2nanep2ev="<p> Täna on ". $n2dalap2evad[$n2dalap2eva_number].".</p>"; 
 
+	
 	if($fromsemesterbegindays <= $semesterdurationdays){
 	$semesterprogress = "\n" .'<p>Semester edeneb: <meter min="0" max="' .$semesterdurationdays .'" value="' .$fromsemesterbegindays .'"></meter>.</p>' ."\n";
 	}
+	elseif($semesterbegindays < 0) {
+	$semesterprogress = "\n <p> Semester pole alanud </p> \n";
+	}
 	else {
 	$semesterprogress = "\n <p>Semester on lõppenud. </p> \n";
+	
 
 	}
  /* meter min ="0" max="156" */
@@ -28,6 +36,7 @@
 	/* var_dump($allfiles); */
 	$allowedphototypes = ["image/jpeg", "image/png"];
 	$picfiles = [];
+	$numbritekogu = [];
 
 	/* */
 
@@ -45,10 +54,29 @@
 	}
 
 	$photocount = count($picfiles);
-	$photonum = mt_rand(0, $photocount-1);
-	$randomphoto = $picfiles[$photonum];
+
+	do {
+		$photonum = mt_rand(0, $photocount-1);
+		if(!(in_array($photonum, $numbritekogu))) {  /* photonum ehk nõel, ja numbritekogu on heinakuhi */
+		
+
+		array_push($numbritekogu, $photonum);
+	
+		}
+	}while (count($numbritekogu) < 3);
+
+		$randomphoto1 = $picfiles[$numbritekogu[0]];
+		$randomphoto2 = $picfiles[$numbritekogu[1]];
+		$randomphoto3 = $picfiles[$numbritekogu[2]];
+
+	
+	
+	
 
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="et">
@@ -66,11 +94,18 @@
 	</h1>
 	<p>See leht on valminud õppetöö raames!</p>
 	<?php
+		echo $t2nanep2ev;
 		echo $timehtml;
 		echo $semesterdurhtml;
 		echo $semesterprogress;
+		
+		
+		
+	
 	?>
-	<img src="<?php echo $picsdir .$randomphoto; ?>" alt="Vaade Haapsalus">
+	<img width=295 height=197 src="<?php echo $picsdir .$randomphoto1;  ?>" alt="Vaade Haapsalus">
+	<img width=295 height=197 src="<?php echo $picsdir .$randomphoto2;  ?>" alt="Vaade Haapsalus">
+	<img width=295 height=197 src="<?php echo $picsdir .$randomphoto3;  ?>" alt="Vaade Haapsalus">
 
 </body>
 </html>
