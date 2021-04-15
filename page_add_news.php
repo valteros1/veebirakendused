@@ -5,7 +5,7 @@
 
 	/* var_dump($_POST);  Massiivi nimi, On olemas ka $_GET */
 	
-	if(isset($_POST["news_submit"])){
+	if(isset($_POST["news_submit"] )){
 		if(empty($_POST["news_title_input"])){
 			$news_input_error = "Uudise Pealkiri on puudu! ";
 
@@ -60,7 +60,7 @@
 	<p>See leht on valminud õppetöö raames!</p>
 	
 	<hr>
-	<form method="POST"> 
+	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>"> 
 		<label for="news_title_input">Uudise pealkiri</label>
 		<br> 
 		<input type="text" id="news_title_input" name="news_title_input" placeholder="Pealkiri">
