@@ -1,6 +1,7 @@
 <?php
 
 	require_once "../../../conf.php";
+	require_once "usesession.php";
 	if (isset($_POST["news_output_num"])) {
 		$news_limit = $_POST["news_output_num"];
 		}
@@ -72,6 +73,8 @@ function do_submit() {
      document.getElementById("news_num").submit();
 }
 </script>
-
+<br>
+		<hr>
+		<a href="home.php">Tagasi pealehele</a>
 </body>
 </html>

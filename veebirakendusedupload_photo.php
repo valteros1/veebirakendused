@@ -1,7 +1,6 @@
 <?php
 
 	require_once "../../../conf.php";
-	require_once "usesession.php";
 	$news_input_error = null;
 
 	/* var_dump($_POST);  Massiivi nimi, On olemas ka $_GET */
@@ -75,9 +74,6 @@
 		<input type="text" id="news_author_input" name="news_author_input" placeholder="Nimi">
 		<br>
 		<input type="submit" name="news_submit" value="Salvesta uudis!">
-		<br>
-		<hr>
-		<a href="home.php">Tagasi pealehele</a>
 
 	</form>
 
