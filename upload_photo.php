@@ -18,7 +18,6 @@
 		$check = getimagesize($_FILES["file_input"]["tmp_name"]);
 		if($check !== false){
 			//kontrollime, kas aktepteeritud failivorming ja fikseerime laiendi
-			//$orig_name = $_FILES["file_input"]['name'];
 			if($check["mime"] == "image/jpeg"){
 				$image_file_type = "jpg";
 			} elseif ($check["mime"] == "image/png"){
@@ -41,7 +40,6 @@
 			$image_file_name = $file_name_prefix .$timestamp ."." .$image_file_type;
 
 			// suuruse muutmine
-			// loome pikslukogumi ehk image objekti
 			$temp_image = null;
 			if($image_file_type == "jpg"){
 				$temp_image = imagecreatefromjpeg($_FILES["file_input"]["tmp_name"]);
@@ -114,12 +112,12 @@
 		$target_file = "../upload_photos_orig/" .$image_file_name;
 		if(move_uploaded_file($_FILES["file_input"]["tmp_name"], $target_file)){
 			if (upload_to_database($_FILES["file_input"]["name"],$image_file_name, $_POST['alt_text'], $_POST['privacy_input']) == 1){ 
-				$photo_upload_error .= " Foto üleslaadimine õnnestus!";
+				$photo_upload_error .= " Pildi üleslaadimine õnnestus!";
 			} else {
-					$photo_upload_error .= " Foto lisamine ebaõnnestus";
+					$photo_upload_error .= " Pildi lisamine ebaõnnestus";
 				}
 			} else {
-				$photo_upload_error .= " Foto üleslaadimine ebaõnnestus!";
+				$photo_upload_error .= " Pildi üleslaadimine ebaõnnestus!";
 			}
 		}
 	}

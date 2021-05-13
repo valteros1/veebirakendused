@@ -23,7 +23,7 @@
 			$conn -> close();
 			return $notice;
 		}
-			
+	//funktsioon pildi suuruse muutmiseks		
 	function resize_image($temp_image, $image_max_w, $image_max_h, $keep_ratio) {
 			$image_w = imagesx($temp_image);
 			$image_h = imagesy($temp_image);
