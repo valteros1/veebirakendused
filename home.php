@@ -32,7 +32,10 @@
 	<a href="page_add_news.php">Lisa uudiseid!</a>
 	<br>
 	<a href="upload_photo.php">Lae pilt</a>
+	<br>
+	<a href="galerii.php">Vaata galeriid!</a>
 	<hr>
+	
 	
 	<p><a href="?logout=1"><p>Logi välja</a></p>
 

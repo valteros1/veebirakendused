@@ -2,6 +2,7 @@
 	require_once "usesession.php";
 	require_once "../../../conf.php";
 	require_once "fnc_general.php";
+	require_once "classes/Upload_photo.class.php";
 	
 	$photo_upload_error = null;
 	$image_file_type = null;
@@ -11,118 +12,85 @@
 	$image_max_w = 600;
 	$image_max_h = 400;
 	$resize_image = null;
+	$watermark = "../images/vr_watermark.png";
+
 	if(isset($_POST["photo_submit"])){
 		//var_dump($_POST);
 		//var_dump($_FILES);
 		//kas üldse on pilt
 		$check = getimagesize($_FILES["file_input"]["tmp_name"]);
+
 		if($check !== false){
+
 			//kontrollime, kas aktepteeritud failivorming ja fikseerime laiendi
 			if($check["mime"] == "image/jpeg"){
 				$image_file_type = "jpg";
 			} elseif ($check["mime"] == "image/png"){
 				$image_file_type = "png";
-				} else {
+			} else {
 				$photo_upload_error = "Pole sobiv formaat! Ainult jpg ja png on lubatud!";
-				}
-				} else {
-				$photo_upload_error = "Tegemist pole pildifailiga!";
-				}
-			if(empty($photo_upload_error)){
+			}
+		} else {
+			$photo_upload_error = "Tegemist pole pildifailiga!";
+		}
+		
+		if(empty($photo_upload_error)){
+		
+			// võtame nüüd kasutusele ulpoad_photo classi
+			$photo_upload = new Upload_photo($_FILES["file_input"],$image_file_type, $file_size_limit);
+
+
+
+
 			//ega pole liiga suur fail
-				if($_FILES["file_input"]["size"] > $file_size_limit){
-				$photo_upload_error = "Valitud fail on liiga suur! Lubatud kuni 2MiB!";
-				}
+			if($_FILES["file_input"]["size"] > $file_size_limit){
+				$photo_upload_error = "Valitud fail on liiga suur! Lubatud kuni 1MiB!";
+			}
+			
 			if(empty($photo_upload_error)){
+				//loome oma failinime
+				$timestamp = microtime(1) * 10000;
+				$image_file_name = $file_name_prefix .$timestamp ."." .$image_file_type;
+
 			
-			//loome oma failinime
-			$timestamp = microtime(1) * 10000;
-			$image_file_name = $file_name_prefix .$timestamp ."." .$image_file_type;
-
-			// suuruse muutmine
-			$temp_image = null;
-			if($image_file_type == "jpg"){
-				$temp_image = imagecreatefromjpeg($_FILES["file_input"]["tmp_name"]);
-			}
-				if($image_file_type == "png"){
-				$temp_image = imagecreatefrompng($_FILES["file_input"]["tmp_name"]);
-				}
-				$image_w = imagesx($temp_image);
-				$image_h = imagesy($temp_image);
-
-			//kuvasuhte säilitamiseks arvutame suuruse muutuja kordaja lähtudes kõrgusest või laiusest
-			if($image_w / $image_max_w > $image_h / $image_max_h){
-				$image_size_ratio = $image_w / $image_max_w;
-				}else {
-					$image_size_ratio = $image_h / $image_max_h;
-				}
-				$image_new_w = round($image_w / $image_size_ratio);
-				$image_new_h = round($image_h / $image_size_ratio);
-
-				// vähendamiseks loome uue image objekti, kuhu kopeerime vähendatud kujutise
 				
-				$new_temp_image = imagecreatetruecolor($image_new_w, $image_new_h);
-				imagecopyresampled($new_temp_image, $temp_image, 0, 0, 0, 0, $image_new_w, $image_new_h, $image_w, $image_h);
+			//-- loome normaalsuuruses pildi säilitades külgede proportsiooni
+				$photo_upload->resize_photo(600, 400, true);
+
 				
-				// salvestame  faili
+				// Lisan vesimärgi
+				$photo_upload->add_watermark($watermark);
+
+				$photo_upload->picture_date();
+
+
 				$target_file = "../upload_photos_normal/" .$image_file_name;
-				if($image_file_type == "jpg"){
-					if(imagejpeg($new_temp_image, $target_file, 90)){
-						$photo_upload_error = "Vähendatud pilt on salvestatud!";
-				} else{ 
-					$photo_upload_error = "Vähendatud pilti ei salvestatud!";
-				}
-			}
-				if($image_file_type == "png"){
-					if(imagepng($new_temp_image, $target_file, 6)){
-					$photo_upload_error = "Vähendatud pilt on salvestatud!";
-			} 	else{ 
-					$photo_upload_error = "Vähendatud pilti ei salvestatud!";
-			}
-		
+				$result = $photo_upload->save_image_to_file($target_file); // 1 on ok tulemus muidu error
 
-		
-				$target_file = "../upload_photos_orig/" .$image_file_name;
-			
-				if(move_uploaded_file($_FILES["file_input"]["tmp_name"], $target_file)){
-				$photo_upload_error .= "Foto üleslaadimine õnnestus!";
-					} 	else {
-					$photo_upload_error .= " Foto üleslaadimine ebaõnnestus!";
-						}
-				}
-				$new_temp_image = resize_image($temp_image, 100, 100, false );
 
+				$photo_upload->resize_photo( 100, 100, false );
 				$target_file = "../upload_photos_thumbnail/" .$image_file_name;
+				$result = $photo_upload->save_image_to_file($target_file); // 1 on ok tulemus muidu error
 
-				if($image_file_type == "jpg"){
-					if(imagejpeg($new_temp_image, $target_file, 90)){
-						$photo_upload_error = "Vähendatud pilt on salvestatud!";
-					} else {
-						$photo_upload_error = "Vähendatud pilti ei salvestatud!";
-					}
-				}
-				if($image_file_type == "png"){
-					if(imagepng($new_temp_image, $target_file, 6)){
-						$photo_upload_error = "Thumbnail on salvestatud!";
-					} else {
-						$photo_upload_error = "Thumbnail ei salvestu!";
-					}
-				}
+				
+				$target_file = "../upload_photos_orig/" .$image_file_name;
 
-		$target_file = "../upload_photos_orig/" .$image_file_name;
-		if(move_uploaded_file($_FILES["file_input"]["tmp_name"], $target_file)){
-			if (upload_to_database($_FILES["file_input"]["name"],$image_file_name, $_POST['alt_text'], $_POST['privacy_input']) == 1){ 
-				$photo_upload_error .= " Pildi üleslaadimine õnnestus!";
-			} else {
-					$photo_upload_error .= " Pildi lisamine ebaõnnestus";
+				if(move_uploaded_file($_FILES["file_input"]["tmp_name"], $target_file)){
+					$photo_upload_error .= " Foto üleslaadimine õnnestus!";
+					if (upload_to_database($image_file_name,$_FILES["file_input"]["name"], $_POST['alt_text'], $_POST['privacy_input']) == 1){
+						$photo_upload_error .= "  Foto andmete lisamine andmebaasi õnnestus";
+					} else {
+						$photo_upload_error .= "  Foto andmete lisamine ebaõnnestus";
+					}
+
+				} else {
+					$photo_upload_error .= " Foto üleslaadimine ebaõnnestus!";
 				}
-			} else {
-				$photo_upload_error .= " Pildi üleslaadimine ebaõnnestus!";
 			}
 		}
 	}
-}
 
+	
 
 ?>
 <!DOCTYPE html>
@@ -137,6 +105,7 @@
 	<hr>
 	
 	<p><a href="home.php">Avalehele</a></p>
+	<p><a href="galerii.php">Galeriisse!</a></p>
 	<hr>
 	<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
 		<label for="file_input">Vali foto fail! </label>

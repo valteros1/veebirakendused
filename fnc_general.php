@@ -9,6 +9,7 @@
 
 	//funktsioon pildi saatmise jaoks andmebaasi
 	function upload_to_database($pic_name,$pic_orig_name,$alt_text,$pic_privacy){
+			//echo $pic_name,$pic_orig_name,$alt_text,$pic_privacy;
 			$notice = 0;
 			$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 			$stmt = $conn->prepare("INSERT INTO vr21_photos (vr21_photos_userid, vr21_photos_filename, vr21_photos_origname, vr21_photos_alttext, vr21_photos_privacy) VALUES (?,?,?,?,?)");

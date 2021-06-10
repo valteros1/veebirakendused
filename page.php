@@ -1,12 +1,20 @@
 <?php
 	//session_start();
-	require("classes/SessionManager.class.php");
+	require_once "classes/SessionManager.class.php";
 	SessionManager::sessionStart("vr", 0, "/~valter.rosenfeld/", "tigu.hk.tlu.ee");
 	require_once "../../../conf.php";
 	// require_once("fnc_general.php");
 	require_once "fnc_user.php";
 	//require_once "fnc_general.php";
 
+	//klassi näide
+	require_once "classes/Test.class.php";
+	$test_object = new Test(5);
+	echo "Avalik number on ", $test_object->non_secret;
+	$test_object->reveal();
+	// eemaldab classi unsetiga, uuesti ei lase kutsuda välja
+	unset($test_object);
+	// echo "Avalik number on ", $test_object->non_secret;
 
 	$myname = "Valter Rosenfeld";
 	$currenttime = date("d.m.Y H:i:s");
