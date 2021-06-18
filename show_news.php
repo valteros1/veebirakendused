@@ -16,19 +16,22 @@
 		/* Määrame suhtluseks kodeeringu*/
 		$conn -> set_charset("utf8");
 		/* Valmistan ette SQL käsu*/
-		$stmt = $conn -> prepare("SELECT vr21_news_news_title, vr21_news_news_content, vr21_news_news_author, vr21_news_added FROM vr21_news ORDER BY vr21_news_id DESC LIMIT ? ");
+		$stmt = $conn -> prepare("SELECT vr21_news_news_title, vr21_news_news_content, vr21_news_news_author, vr21_news_added, vr21_news_photo, vr21_news_photo_alttext FROM vr21_news ORDER BY vr21_news_id DESC LIMIT ? ");
 		$stmt -> bind_param("s",$news_limit);
 		echo $conn -> error;
 		/* i - integer s - string d - decimal PS! paramiga JÄRJEKORD!!!!!*/
-		$stmt -> bind_result($news_title_from_db, $news_content_from_db, $news_author_from_db, $news_added_from_db );
+		$stmt -> bind_result($news_title_from_db, $news_content_from_db, $news_author_from_db, $news_added_from_db, $news_photo_from_db, $news_photo_alttext_from_db );
 		$stmt -> execute();
 		$raw_news_html = null;
 		while ($stmt -> fetch()){
+			$raw_news_html .= "<img class='News_picture' src='../news_pictures/".$news_photo_from_db."'>";
+		
 			$raw_news_html .= "\n <h2>" .$news_title_from_db ." </h2>";
 			$date_of_news = new DateTime($news_added_from_db); 
 			$raw_news_html .= "\n <p>Lisatud: ".$date_of_news->format('d-m-Y')."</H4>";
 			$raw_news_html .= "\n <p> " .nl2br($news_content_from_db) ."</p>";
 			
+
 			if(!empty($news_author_from_db)) { 
 				$raw_news_html .= "\n <p>Edastas: " .$news_author_from_db;
 			}else {
@@ -53,6 +56,7 @@
 <head>
 	<meta charset="utf-8">
 	<title>Veebirakendused ja nende loomine 2021</title>
+	<<link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
 	<h1>

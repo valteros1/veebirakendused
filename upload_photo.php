@@ -96,6 +96,7 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
+	<script src="checkImageSize.js"> defer </script>
 	<meta charset="utf-8">
 	<title>Veebirakendused ja nende loomine 2021</title>
 </head>

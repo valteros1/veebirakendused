@@ -21,7 +21,6 @@ function db_info_grab(){
             echo '</div>'."\n";
     }
 
-
 }
 
 ?>
@@ -30,9 +29,11 @@ function db_info_grab(){
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="modal.js"> defer </script>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="css/modal.css">
 
 
 
@@ -92,19 +93,70 @@ body{
 }
 </style>
     
+    
+
 </head>
 <body >
+
 <h1> Galerii  </h1>
 <div class="nav_riba">
     <a class="active" href="home.php">Pealehele</a>
     <a href="page_add_news.php">Lisa uudiseid</a>
     <a href="upload_photo.php">Lae pilt!</a>
 </div>
-
+<div id="gallery">
+  <!--Modaalaken fotogalerii jaoks-->
+  <div id="modalarea" class="modalarea">
+	<!--sulgemisnupp-->
+	<span id="modalclose" class="modalclose">&times;</span>
+	<!--pildikoht-->
+	<div class="modalhorizontal">
+		<div class="modalvertical">
+			<p id="modalcaption"></p>
+			<img id="modalimg" src="../images/empty.png" alt="galeriipilt">
+            <br>
+			<div id="rating" class="modalRating">
+				<label><input id="rate1" name="rating" type="radio" value="1">1</label>
+				<label><input id="rate2" name="rating" type="radio" value="2">2</label>
+				<label><input id="rate3" name="rating" type="radio" value="3">3</label>
+				<label><input id="rate4" name="rating" type="radio" value="4">4</label>
+				<label><input id="rate5" name="rating" type="radio" value="5">5</label>
+				<button id="storeRating">Salvesta hinnang!</button>
+				<br>
+				<p id="avgRating"></p>
+			</div>
+			
+		</div>
+	</div>
+  </div>  <!--Modaalaken fotogalerii jaoks-->
+  <div id="modalarea" class="modalarea">
+	<!--sulgemisnupp-->
+	<span id="modalclose" class="modalclose">&times;</span>
+	<!--pildikoht-->
+	<div class="modalhorizontal">
+		<div class="modalvertical">
+			<p id="modalcaption"></p>
+			<img id="modalimg" src="../images/empty.png" alt="galeriipilt">
+            <br>
+			<div id="rating" class="modalRating">
+				<label><input id="rate1" name="rating" type="radio" value="1">1</label>
+				<label><input id="rate2" name="rating" type="radio" value="2">2</label>
+				<label><input id="rate3" name="rating" type="radio" value="3">3</label>
+				<label><input id="rate4" name="rating" type="radio" value="4">4</label>
+				<label><input id="rate5" name="rating" type="radio" value="5">5</label>
+				<button id="storeRating">Salvesta hinnang!</button>
+				<br>
+				<p id="avgRating"></p>
+			</div>
+			
+		</div>
+	</div>
+  </div>
 <main class="grid">
 <?php
 db_info_grab()
 ?>
+<div>
 </main>
 </body>
 </html>
